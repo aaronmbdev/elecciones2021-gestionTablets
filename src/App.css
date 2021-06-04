@@ -1,0 +1,10 @@
+
+.scroll {
+  position: absolute;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+.main {
+  height: 100%;
+}
