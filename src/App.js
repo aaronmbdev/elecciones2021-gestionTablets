@@ -1,8 +1,7 @@
 import './App.css';
 import {Component} from "react";
-import "firebase/database"
-import firebase from "firebase";
-import {FirebaseDatabaseProvider} from "@react-firebase/database";
+import "@firebase/database"
+import firebase from "@firebase/app";
 import {Alert, Badge, Button, Card, Col, Container, Row, Spinner} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import moment from "moment";
@@ -152,17 +151,19 @@ class App extends  Component {
             let items = [];
             if(this.state.data !==null) {
                 this.state.data.forEach((e) => {
-                    items.push(<Marker icon={iconPerson} key={e[0]} position={[e[1].lat,e[1].long]}>
-                        <Popup>
-                            {e[1].usuario}
-                        </Popup>
-                    </Marker>);
+                    if(e[1].lat !== undefined && e[1].long !== undefined) {
+                        items.push(<Marker icon={iconPerson} key={e[0]} position={[e[1].lat,e[1].long]}>
+                            <Popup>
+                                {e[1].usuario}
+                            </Popup>
+                        </Marker>);
+                    }
                 });
             }
             return items;
         }
     return (
-        <FirebaseDatabaseProvider firebase={firebase}>
+
             <div className="App main">
                 <Container fluid>
                     <Row>
@@ -186,7 +187,7 @@ class App extends  Component {
                     </Row>
                 </Container>
             </div>
-        </FirebaseDatabaseProvider>
+
     );
   }
 }
