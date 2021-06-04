@@ -9,6 +9,8 @@ import {FaThumbsUp} from "react-icons/all";
 import "leaflet/dist/leaflet.css";
 import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
 import leaflet from "leaflet";
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 
 const config = {
@@ -19,13 +21,8 @@ const config = {
 };
 
 const iconPerson = new leaflet.Icon({
-    iconUrl: require('./location-pin.svg'),
-    iconRetinaUrl: require('./location-pin.svg'),
-    iconSize: [38, 95],
-    iconAnchor: [22, 94],
-    popupAnchor: [-3, -76],
-    shadowSize: [68, 95],
-    shadowAnchor: [22, 94]
+    iconUrl: icon,
+    shadowUrl: iconShadow
 });
 
 export { iconPerson };
@@ -120,27 +117,53 @@ class App extends  Component {
                 this.state.data.forEach((e) => {
                     let id = e[0];
                     let data = e[1];
-                    render.push(
-                        <Row>
-                            <Col>
-                                <Card  key={id} style={{margin:"20px"}}>
-                                    <Card.Header as="h5">Tablet #{id}</Card.Header>
-                                    <Card.Body>
-                                        <Card.Text>
-                                            Estado: {getTimeDiff(data.lastSeen).badge}
-                                        </Card.Text>
-                                        <Card.Text>
-                                            Referencia: {data.usuario}
-                                        </Card.Text>
-                                        <Card.Text>
-                                            Última conexión: hace {getTimeDiff(data.lastSeen).text}
-                                        </Card.Text>
-                                        {getAsistencia(data.asistencia,id)}
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        </Row>
-                    );
+                    if(data.lastSeen !== undefined) {
+                        render.push(
+                            <Row>
+                                <Col>
+                                    <Card  key={id} style={{margin:"20px"}}>
+                                        <Card.Header as="h5">Tablet #{id}</Card.Header>
+                                        <Card.Body>
+                                            <Card.Text>
+                                                Estado: {getTimeDiff(data.lastSeen).badge}
+                                            </Card.Text>
+                                            <Card.Text>
+                                                Referencia: {data.usuario}
+                                            </Card.Text>
+                                            <Card.Text>
+                                                Última conexión: hace {getTimeDiff(data.lastSeen).text}
+                                            </Card.Text>
+                                            {getAsistencia(data.asistencia,id)}
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        );
+                    } else {
+                        render.push(
+                            <Row>
+                                <Col>
+                                    <Card  key={id} style={{margin:"20px"}}>
+                                        <Card.Header as="h5">Tablet #{id}</Card.Header>
+                                        <Card.Body>
+                                            <Card.Text>
+                                                Estado: <Badge pill variant="warning">
+                                                Registrado
+                                            </Badge>
+                                            </Card.Text>
+                                            <Card.Text>
+                                                Referencia: {data.usuario}
+                                            </Card.Text>
+                                            <Card.Text>
+                                                No se están recibiendo datos de localización
+                                            </Card.Text>
+                                            {getAsistencia(data.asistencia,id)}
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        );
+                    }
                 });
                 return render;
             } else {
