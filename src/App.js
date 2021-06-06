@@ -1,12 +1,9 @@
-import './App.css';
 import {Component} from "react";
 import "@firebase/database"
 import firebase from "@firebase/app";
-import {Alert, Badge, Button, Card, Col, Container, Row, Spinner} from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import {Alert, Badge, Button, Card, Col, Row, Spinner} from "react-bootstrap";
 import moment from "moment";
 import {FaThumbsUp} from "react-icons/all";
-import "leaflet/dist/leaflet.css";
 import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
 import leaflet from "leaflet";
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -52,7 +49,7 @@ class App extends  Component {
     }
 
     render() {
-        const styleMap = { "width": "100%", "height": "60vh" }
+        const styleMap = { "width": "100vw", "height": "100vh" }
         const getTimeDiff = (data) => {
             let ahora = moment(new Date());
             let antes = moment(moment.unix(data));
@@ -60,24 +57,18 @@ class App extends  Component {
                 if(ahora.diff(antes,'minute',false) > 60) {
                     return {
                         text: ahora.diff(antes,'hour',false)+" horas",
-                        badge: <Badge pill variant="danger">
-                            Desconectado
-                        </Badge>
+                        badge: <span className="badge badge-pill badge-danger" style={{background:"#b82f2e"}}>Desconectado</span>
                     };
                 } else {
                     return {
                         text: ahora.diff(antes,'minute',false)+" minutos",
-                        badge: <Badge pill variant="warning">
-                            Desconectado
-                        </Badge>
+                        badge: <span className="badge badge-pill badge-warning" style={{background:"#eab42e"}}>Desconectado</span>
                     };
                 }
             } else {
                 return {
                     text: ahora.diff(antes,'second',false)+ " segundos",
-                    badge: <Badge pill variant="success">
-                        En línea
-                    </Badge>
+                    badge: <span className="badge badge-pill badge-success" style={{background:"#22a8aa"}}>En línea</span>
                 };
             }
         }
@@ -93,20 +84,20 @@ class App extends  Component {
         const getAsistencia = (get,id) => {
             if(get) {
                 return(
-                    <Row>
-                        <Col>
+                    <div className={"row"}>
+                        <div className={"col-md-12"}>
                             <Alert variant={"danger"}>
                                 El usuario requiere asistencia
                             </Alert>
-                        </Col>
-                        <Col>
+                        </div>
+                        <div className={"col-md-12"}>
                             <Button variant="success">
                                 <FaThumbsUp onClick={() => {
                                     cancelarAsistencia(id)
                                 }} />
                             </Button>
-                        </Col>
-                    </Row>
+                        </div>
+                    </div>
                 );
             }
 
@@ -185,30 +176,32 @@ class App extends  Component {
             }
             return items;
         }
+        const renderMap = () => {
+            return(<MapContainer
+                style={styleMap}
+                center={[41.373286, 2.151722]}
+                zoom={17}>
+
+                {renderMarkers()}
+
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+                />
+            </MapContainer>);
+        }
     return (
 
             <div className="App main">
-                <Container fluid>
-                    <Row>
-                        <Col className={"scroll"}>
+
+                    <div className={"row"}>
+                        <div id="panel" className={"col-md-3 scroll"}>
                             {getTablets()}
-                        </Col>
-                        <Col xs={8}>
-                            <MapContainer
-                                style={styleMap}
-                                center={[41.373286, 2.151722]}
-                                zoom={17}>
-
-                                {renderMarkers()}
-
-                                <TileLayer
-                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                    attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                                />
-                            </MapContainer>
-                        </Col>
-                    </Row>
-                </Container>
+                        </div>
+                        <div className={"col-md-8"}>
+                            {renderMap()}
+                        </div>
+                    </div>
             </div>
 
     );
